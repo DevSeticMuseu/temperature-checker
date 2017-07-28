@@ -1,15 +1,13 @@
 #include <ESP8266WiFi.h>
 
-const char* ssid     = "wifimuseu";      // SSID of local network
-const char* password = "YourPasswordGoesHere";   // Password on network
-const char servername[] = "edit.museu-goeldi.br"; // remote server we will connect to
+const char* ssid     = "OCapitalismo";
+const char* password = "asds";
+const char servername[] = "192.168.0.11"; // remote server we will connect to
 
 float voltageRead;
 float temperature;
 
 String temperatureString;
-
-int status = WL_IDLE_STATUS;
 
 WiFiClient client;
 
@@ -17,33 +15,34 @@ void setup() {
     Serial.begin(115200);
     Serial.println("Connecting");
     
+    WiFi.begin(ssid, password);
     // attempt to connect to Wifi network:
-    while ( status != WL_CONNECTED) {
+    while ( WiFi.status() != WL_CONNECTED) {
         Serial.print("Attempting to connect to network, SSID: ");
         Serial.println(ssid);
-        status = WiFi.begin(ssid, password);
 
         // wait 10 seconds for connection:
-        delay(10000);
+        delay(3000);
     }
 
     Serial.println("Connected");
 }
 
 void loop() {
-    delay(30000);
+    delay(3000);
     readSensor();
-    if( temperature >= 30 ){
+    if( temperature >= 20 ){
         temperatureString = String(temperature);
         sendDataToServer(temperatureString);
     }
 }
 
 void sendDataToServer(String temp) {
+    String result;
     if (client.connect(servername, 80)) {  //starts client connection, checks for connection
         Serial.println("connected");
-        client.println("GET /send_email/email.php?temperature="+temp+" HTTP/1.1"); //Send data
-        client.println("Host: "+servername);
+        client.println("GET /send-email/email.php?temperature="+temp+" HTTP/1.1"); //Send data
+        client.println("Host: 192.168.0.11");
         client.println("Connection: close");  //close 1.1 persistent connection  
         client.println(); //end of get request
     } else {
@@ -51,17 +50,17 @@ void sendDataToServer(String temp) {
         Serial.println();
     }
 
-    // while(client.connected() && !client.available()) delay(1); //waits for data
-    // while (client.connected() || client.available()) { //connected or data available
-    //     char c = client.read(); //gets byte from ethernet buffer
-    //     result = result+c;
-    // }
+    while(client.connected() && !client.available()) delay(1); //waits for data
+    while (client.connected() || client.available()) { //connected or data available
+        char c = client.read(); //gets byte from ethernet buffer
+        result = result+c;
+    }
 
-    // client.stop(); //stop client
-    // Serial.println(result);
+    client.stop(); //stop client
+    Serial.println(result);
 }
 
 void readSensor() {
     voltageRead = analogRead(A0);
-    temperature = voltageRead/3.26;
+    temperature = voltageRead/3.33;
 }
