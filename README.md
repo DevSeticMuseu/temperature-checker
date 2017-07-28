@@ -1,14 +1,13 @@
 # Medidor de temperatura
 
-Projeto medidor de temperatura que visa obter e armazenar informações sobre o ambiente no datacenter.
+Projeto medidor de temperatura. Utilizando a placa NodeMCU ESP8266 com o componente LM35, este projeto visa receber e tratar informações de temperatura em um ambiente.
 
-### Requisitos
+## Requisitos
 
+* Arduino IDE
+* Servidores PHP e SMTP
 
-### Instalação
-
-
-## Testes
+## Instalação
 
 
 ## Componentes
