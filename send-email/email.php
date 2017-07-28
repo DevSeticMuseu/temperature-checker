@@ -41,9 +41,9 @@ $mail->addAddress('jonatasfalves@', 'John Doe');
 $mail->Subject = 'PHPMailer SMTP without auth test';
 //Read an HTML message body from an external file, convert referenced images to embedded,
 //convert HTML into a basic plain-text alternative body
-$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
+//$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
 //Replace the plain text body with one created manually
-//$mail->AltBody = 'This is a plain-text message body';
+$mail->AltBody = 'This is a plain-text message body. The temperature current measured is: {$temperature}';
 //Attach an image file
 //$mail->addAttachment('phpmailer_mini.png');
 
