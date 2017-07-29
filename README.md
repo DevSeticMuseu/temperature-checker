@@ -9,6 +9,13 @@ Projeto medidor de temperatura. Utilizando a placa NodeMCU ESP8266 com o compone
 
 ## Instalação
 
+Baixe e instale a IDE do arduino. (https://www.arduino.cc/en/main/software);
+
+Instale a biblioteca do ESP8266:
+    * File > Preferences
+    * Em Additional Boards Manager URLs cole "https://www.arduino.cc/en/main/software";
+    * Tools > Boards > Boards Manager, encontre e baixe a biblioteca ESP8266;
+    * Reinicie a IDE e troque a placa usada em Tools > Boards para NodeMCU EP8266.
 
 ## Componentes
 
