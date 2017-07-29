@@ -11,9 +11,6 @@ date_default_timezone_set('Etc/UTC');
 //Call Autoloader
 require_once './classes/PHPMailerAutoload.php';
 
-//Get temperature from the board
-$temperature = $_GET["temperature"];
-
 //Create a new PHPMailer instance
 $mail = new PHPMailer;
 //Tell PHPMailer to use SMTP
@@ -41,11 +38,8 @@ $mail->addAddress('jonatasfalves@', 'John Doe');
 $mail->Subject = 'PHPMailer SMTP without auth test';
 //Read an HTML message body from an external file, convert referenced images to embedded,
 //convert HTML into a basic plain-text alternative body
-//$mail->msgHTML(file_get_contents('contents.html'), dirname(__FILE__));
-//Replace the plain text body with one created manually
-$mail->AltBody = 'This is a plain-text message body. The temperature current measured is: {$temperature}';
-//Attach an image file
-//$mail->addAttachment('phpmailer_mini.png');
+$mail->IsHTML(true);
+$mail->Body='Attention! The temperature measured in the datacenter is: '.$_GET["temperature"];
 
 //send the message, check for errors
 if (!$mail->send()) {
