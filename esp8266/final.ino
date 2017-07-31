@@ -1,11 +1,13 @@
 #include <ESP8266WiFi.h>
 
-const char* ssid     = "OCapitalismo";
-const char* password = "asds";
-const char servername[] = "192.168.0.11"; // remote server we will connect to
+const char* ssid     = "MPEG-STI";
+const char* password = "w1f1mpeg";
+const char servername[] = "10.0."; // remote server we will connect to
 
 float voltageRead;
 float temperature;
+
+int cont = 0;
 
 String temperatureString;
 
@@ -31,10 +33,22 @@ void setup() {
 void loop() {
     delay(3000);
     readSensor();
-    if( temperature >= 20 ){
-        temperatureString = String(temperature);
-        sendDataToServer(temperatureString);
-    }
+    Serial.print( "The temperature is: " );
+    Serial.println( temperature );
+//    if( temperature >= 20 ){
+//        cont += 1;
+//        Serial.print( cont );
+//        if ( cont >= 5 ){
+//            Serial.println( "Enviando informações por email" );
+//            temperatureString = String(temperature);
+//            sendDataToServer(temperatureString);
+//            cont = 0;
+//            delay( 10000 );
+//        }
+//    }
+//    else{
+//        cont = 0;
+//    }
 }
 
 void sendDataToServer(String temp) {
@@ -42,7 +56,7 @@ void sendDataToServer(String temp) {
     if (client.connect(servername, 80)) {  //starts client connection, checks for connection
         Serial.println("connected");
         client.println("GET /send-email/email.php?temperature="+temp+" HTTP/1.1"); //Send data
-        client.println("Host: 192.168.0.11");
+        client.println("Host: 10.0.0");
         client.println("Connection: close");  //close 1.1 persistent connection  
         client.println(); //end of get request
     } else {
@@ -62,5 +76,5 @@ void sendDataToServer(String temp) {
 
 void readSensor() {
     voltageRead = analogRead(A0);
-    temperature = voltageRead/3.33;
+    temperature = voltageRead/3.3;
 }
