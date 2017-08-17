@@ -1,13 +1,18 @@
 #include <ESP8266WiFi.h>
 
-const char* ssid     = "MPEG-STI";
-const char* password = "w1f1mpeg";
+extern "C" {
+
+#include "user_interface.h"
+}
+
+const char* ssid     = "O capitalismo";
+const char* password = "04091972B,jnts";
 const char servername[] = "10.0."; // remote server we will connect to
 
 float voltageRead;
 float temperature;
 
-int cont = 0;
+int highTempCont = 0;
 
 String temperatureString;
 
@@ -16,39 +21,47 @@ WiFiClient client;
 void setup() {
     Serial.begin(115200);
     Serial.println("Connecting");
-    
+
+    //Inicia pino do led como saída
+    pinMode(D1, OUTPUT);
+
     WiFi.begin(ssid, password);
-    // attempt to connect to Wifi network:
-    while ( WiFi.status() != WL_CONNECTED) {
-        Serial.print("Attempting to connect to network, SSID: ");
-        Serial.println(ssid);
 
-        // wait 10 seconds for connection:
-        delay(3000);
-    }
-
+    testConnection();
+    
     Serial.println("Connected");
+
+    WiFi.mode(WIFI_STA);
+    wifi_set_sleep_type(LIGHT_SLEEP_T);
 }
 
-void loop() {
-    delay(3000);
+void loop() {    
+  
+    testConnection();
+
     readSensor();
+
     Serial.print( "The temperature is: " );
     Serial.println( temperature );
+
 //    if( temperature >= 20 ){
-//        cont += 1;
-//        Serial.print( cont );
-//        if ( cont >= 5 ){
+//        highTempCont += 1;
+//        Serial.print( highTempCont );
+//        if ( highTempCont >= 10 ){
 //            Serial.println( "Enviando informações por email" );
 //            temperatureString = String(temperature);
 //            sendDataToServer(temperatureString);
-//            cont = 0;
-//            delay( 10000 );
+//            highTempCont = 0;
 //        }
 //    }
 //    else{
-//        cont = 0;
+//        highTempCont = 0;
 //    }
+
+    Serial.println("Indo dormir por 30 secs");
+
+    //Espera 10 segundos
+    delay(10000);
 }
 
 void sendDataToServer(String temp) {
@@ -77,4 +90,24 @@ void sendDataToServer(String temp) {
 void readSensor() {
     voltageRead = analogRead(A0);
     temperature = voltageRead/3.3;
+}
+
+/* Testa conexão. Caso não consiga conectar ao wifi,
+   acende o led e espera o estabelecimento de conexão */
+void testConnection(){
+    Serial.println("Testando conexão");
+
+    if ( WiFi.status() != WL_CONNECTED){
+        digitalWrite(D1, HIGH);
+        
+        while ( WiFi.status() != WL_CONNECTED) {
+            Serial.print("Attempting to connect to network, SSID: ");
+            Serial.println(ssid);
+
+            //Espera 5 segundos antes de tentar outra vez
+            delay(5000);
+        }
+    }
+
+    digitalWrite(D1, LOW);
 }
