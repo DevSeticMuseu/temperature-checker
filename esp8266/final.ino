@@ -5,9 +5,9 @@ extern "C" {
 #include "user_interface.h"
 }
 
-const char* ssid     = "O capitalismo";
-const char* password = "04091972B,jnts";
-const char servername[] = "10.0."; // remote server we will connect to
+const char* ssid     = "MPEG-STI";
+const char* password = "w1f1mpeg";
+const char servername[] = "10.250."; // remote server we will connect to
 
 float voltageRead;
 float temperature;
@@ -43,25 +43,28 @@ void loop() {
 
     Serial.print( "The temperature is: " );
     Serial.println( temperature );
+    
 
-//    if( temperature >= 20 ){
-//        highTempCont += 1;
-//        Serial.print( highTempCont );
-//        if ( highTempCont >= 10 ){
-//            Serial.println( "Enviando informações por email" );
-//            temperatureString = String(temperature);
-//            sendDataToServer(temperatureString);
-//            highTempCont = 0;
-//        }
-//    }
-//    else{
-//        highTempCont = 0;
-//    }
+    if( temperature >= 20.00 ){
+        highTempCont += 1;
+        Serial.print( highTempCont );
+        if ( highTempCont >= 3 ){
+            Serial.println( "Enviando informações por email" );
+            sendDataToServer("temp > 25. It worked!");
+            highTempCont = 0;
+        }
+    }
+    else{
+        highTempCont = 0;
+    }
+
+    temperatureString = String(temperature);
+    sendDataToServer(temperatureString);
 
     Serial.println("Indo dormir por 30 secs");
 
     //Espera 10 segundos
-    delay(10000);
+    delay(30000);
 }
 
 void sendDataToServer(String temp) {
@@ -69,7 +72,7 @@ void sendDataToServer(String temp) {
     if (client.connect(servername, 80)) {  //starts client connection, checks for connection
         Serial.println("connected");
         client.println("GET /send-email/email.php?temperature="+temp+" HTTP/1.1"); //Send data
-        client.println("Host: 10.0.0");
+        client.println("Host: 10.250");
         client.println("Connection: close");  //close 1.1 persistent connection  
         client.println(); //end of get request
     } else {
@@ -97,7 +100,7 @@ void readSensor() {
 void testConnection(){
     Serial.println("Testando conexão");
 
-    if ( WiFi.status() != WL_CONNECTED){
+    if ( WiFi.status() != WL_CONNECTED ){
         digitalWrite(D1, HIGH);
         
         while ( WiFi.status() != WL_CONNECTED) {
