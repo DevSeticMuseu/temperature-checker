@@ -27,14 +27,14 @@ void setup() {
     pinMode(D1, OUTPUT);
     WiFi.begin(ssid, senha);
 
-    testarConexao();
+    testaConexao();
 
     WiFi.mode(WIFI_STA);
     wifi_set_sleep_type(LIGHT_SLEEP_T);
 }
 
 void loop() {    
-    testarConexao();
+    testaConexao();
     lerSensor();
     trataTemperatura(temperaturaMedida);
     //Espera 60 segundos
@@ -42,7 +42,7 @@ void loop() {
 }
 
 //Conecta ao servidor e chama o script php para enviar email
-void enviarEmail(String nivel, String temp) {
+void enviaEmail(String nivel, String temp) {
     String result;
     if (client.connect(servidor, port)) {  //starts client connection, checks for connection
         Serial.println("conectado");
@@ -72,7 +72,7 @@ void lerSensor() {
 
 /* Testa conexão. Caso não consiga conectar ao wifi,
    acende o led e espera o estabelecimento de conexão */
-void testarConexao() {
+void testaConexao() {
     if ( WiFi.status() != WL_CONNECTED ){
         digitalWrite(D1, HIGH);
         
@@ -90,7 +90,7 @@ void trataTemperatura(float tempMedida) {
         contadorAltaTemp += 1;
         if ( contadorAltaTemp >= 3 ){
             stringTemperatura = String(temperaturaMedida);
-            enviarEmail("aumentou", stringTemperatura);
+            enviaEmail("aumentou", stringTemperatura);
             mediaTemperatura += 1;
             contadorAltaTemp = 0;
         }
@@ -103,9 +103,9 @@ void trataTemperatura(float tempMedida) {
     if( tempMedida <= (mediaTemperatura-2) && mediaTemperatura > temperaturaDeAlerta ){
         contadorBaixaTemp += 1;
         if ( contadorBaixaTemp >= 5 ){
-            stringTemperatura = String(temperaturaMedida);
-            enviarEmail("diminuiu", stringTemperatura);
             mediaTemperatura -= 1;
+            stringTemperatura = String(mediaTemperatura);
+            enviaEmail("diminuiu", stringTemperatura);
             contadorBaixaTemp = 0;
         }
     } else{
