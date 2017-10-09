@@ -86,12 +86,12 @@ void testaConexao() {
 
 void trataTemperatura(float tempMedida) {
     //Envia um email a cada aumento de um grau na temperatura.
-    if( tempMedida >= mediaTemperatura ){
+    if( tempMedida >= (mediaTemperatura + 2) ){
         contadorAltaTemp += 1;
         if ( contadorAltaTemp >= 3 ){
-            stringTemperatura = String(temperaturaMedida);
+            mediaTemperatura += 2;
+            stringTemperatura = String(mediaTemperatura);
             enviaEmail("aumentou", stringTemperatura);
-            mediaTemperatura += 1;
             contadorAltaTemp = 0;
         }
     } else{
@@ -99,11 +99,11 @@ void trataTemperatura(float tempMedida) {
     }
 
     /* Caso a temperatura meça menos dois graus em relação a última temperatura de alerta,
-    envia um email informando que a temperatura está se estabilizando. */
+    envia um email informando que a temperatura está diminuindo. */
     if( tempMedida <= (mediaTemperatura-2) && mediaTemperatura > temperaturaDeAlerta ){
         contadorBaixaTemp += 1;
         if ( contadorBaixaTemp >= 3 ){
-            mediaTemperatura -= 1;
+            mediaTemperatura -= 2;
             stringTemperatura = String(mediaTemperatura);
             enviaEmail("diminuiu", stringTemperatura);
             contadorBaixaTemp = 0;
