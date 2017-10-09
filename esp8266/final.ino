@@ -102,7 +102,7 @@ void trataTemperatura(float tempMedida) {
     envia um email informando que a temperatura está se estabilizando. */
     if( tempMedida <= (mediaTemperatura-2) && mediaTemperatura > temperaturaDeAlerta ){
         contadorBaixaTemp += 1;
-        if ( contadorBaixaTemp >= 5 ){
+        if ( contadorBaixaTemp >= 3 ){
             mediaTemperatura -= 1;
             stringTemperatura = String(mediaTemperatura);
             enviaEmail("diminuiu", stringTemperatura);
