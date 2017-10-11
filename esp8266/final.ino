@@ -43,6 +43,7 @@ void loop() {
 
 //Conecta ao servidor e chama o script php para enviar email
 void enviaEmail(String nivel, String temp) {
+    String result;
     if (client.connect(servidor, port)) {  //starts client connection, checks for connection
         client.println("GET /send-email/email-"+nivel+".php?temperatura="+temp+" HTTP/1.1"); //Send data
         client.println("Host: camaleao.museu-goeldi.br");
