@@ -1,6 +1,6 @@
-# Medidor de temperatura
+# Sensor de temperatura
 
-Projeto medidor de temperatura. Utilizando a placa NodeMCU ESP8266 com o componente LM35, este projeto visa receber e tratar informações de temperatura em um ambiente.
+Projeto sensor de temperatura. Utilizando a placa NodeMCU ESP8266 com o componente LM35, este projeto busca receber e tratar informações de temperatura em um ambiente fechado.
 
 ## Requisitos
 
