@@ -19,8 +19,8 @@ float temperaturaMedida;
 
 int contadorAltaTemp = 0;
 int contadorBaixaTemp = 0;
-int mediaTemperatura = 23;
-int temperaturaDeAlerta = 23;
+int mediaTemperatura = 22;
+int temperaturaDeAlerta = 22;
 
 void setup() {
     //Inicia pino do led como saída
