@@ -43,16 +43,13 @@ void loop() {
 
 //Conecta ao servidor e chama o script php para enviar email
 void enviaEmail(String nivel, String temp) {
-    String result;
     if (client.connect(servidor, port)) {  //starts client connection, checks for connection
-        Serial.println("conectado");
         client.println("GET /send-email/email-"+nivel+".php?temperatura="+temp+" HTTP/1.1"); //Send data
         client.println("Host: camaleao.museu-goeldi.br");
         client.println("Connection: close");  //close 1.1 persistent connection  
         client.println(); //end of get request
     } else {
-        Serial.println("connection failed"); //error message if no client connect
-        Serial.println();
+        // Connection failed
     }
 
     while(client.connected() && !client.available()) delay(1); //waits for data
@@ -62,7 +59,6 @@ void enviaEmail(String nivel, String temp) {
     }
 
     client.stop(); //stop client
-    Serial.println(result);
 }
 
 void lerSensor() {
