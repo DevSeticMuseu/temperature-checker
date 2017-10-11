@@ -31,18 +31,20 @@ $mail->Port = 25;
 //Whether to use SMTP authentication
 $mail->SMTPAuth = false;
 //Set who the message is to be sent from
-$mail->setFrom('jonatasfalves@museu-goeldi.br', 'First Last');
+$mail->setFrom('devsetic@museu-goeldi.br', 'Datacenter');
 //Set who the message is to be sent to
-$mail->addAddress('jonatasfalves@museu-goeldi.br', 'John Doe');
+$mail->addAddress('alves.jnts@gmail.com', 'Jonatas Alves');
+$mail->addAddress('raniery@museu-goeldi.br', 'Raniery Pontes');
+$mail->addAddress('thiagosylas@museu-goeldi.br', 'Thiago Sylas');
 
 $mail->IsHTML(true);
 
 
 //Set the subject line
-$mail->Subject = 'Atenção! A temperatura no datacenter está aumentando!';
+$mail->Subject = 'ALERTA! A TEMPERATURA NO DATACENTER ESTÁ AUMENTANDO!';
 //Read an HTML message body from an external file, convert referenced images to embedded,
 //convert HTML into a basic plain-text alternative body
-$mail->Body='Atualmente o sensor está medindo uma temperatura média constante de '.$_GET["temperatura"];
+$mail->Body='Atualmente o sensor está medindo uma temperatura constante de '.$_GET["temperatura"];
 
 //send the message, check for errors
 if (!$mail->send()) {
