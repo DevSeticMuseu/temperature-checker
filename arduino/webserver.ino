@@ -15,7 +15,8 @@ EthernetServer server(80);
 EthernetClient client;
 
 long lastReadingTime = 0;
-char searchServer[] = "www.google.com"; 
+// char nodeServer[] = "www.google.com"; 
+// Add server ip here
 
 void setup() {
   // Open serial communications and wait for port to open:
@@ -80,11 +81,11 @@ void listenForEthernetClients(){
 
 void tryConnection(){
   // if you get a connection, report back via serial:
-  if (client.connect(searchServer, 80)) {
+  if (client.connect(nodeServer, 80)) {
     Serial.println("connected");
     // Make a HTTP request:
-    client.println("GET /search?q=arduino HTTP/1.1");
-    client.println("Host: www.google.com");
+    client.println("POST /sensor/api/"+ temperature +" HTTP/1.1");
+    client.println("Host: www.server.com");
     client.println("Connection: close");
     client.println();
   } else {
