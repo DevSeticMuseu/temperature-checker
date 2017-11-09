@@ -1,7 +1,7 @@
 "use strict";
 
 var express = require('express');
-var admin = require("firebase-admin");
+var firebase = require("firebase-admin");
 
 var serviceAccount = require('path/to/serviceAccountKey.json');
 
@@ -11,27 +11,47 @@ firebase.initializeApp({
 });
 
 // AC commands. Get information about ac status
-var locationRef = admin.database().ref('ac/');
+var locationRef = firebase.database().ref('ac/');
 locationRef.on('child_changed', function (data) {
     var ac = data.key;
     var status = data.val();
     console.log(ac + ": " + status);
 });
 
-var getTime = function () {
+var getDate = function () {
     var date = new Date();
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    var day = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var fullDate = day + "-" + month + "-" + year;
+    var fullTime = hour + "h" + min;
+
+    return {
+        "day" : fullDate,
+        "time" : fullTime
+    }
 }
 
 // api
 var app = express();
 
 app.post('/sensor/api/:temperature', function (req, res) {
-    //Get current time to alocate in firebase
-    getTime();
+    var date = getDate();
 
-    // var temperature = req.params.temperature;
-    admin.database().ref('/sensor/').update({
-        temperature: req.params.temperature
+    firebase.database().ref('/sensor/' + date.day).update({
+        [date.time]: req.params.temperature
     });
 });
 

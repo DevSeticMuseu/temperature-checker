@@ -8,6 +8,9 @@ byte mac[] = {
 };
 IPAddress ip(192, 168, 0, 17);
 
+IPAddress nodeServer(74,125,232,128);
+// char nodeServer[] = "www.google.com"; 
+
 // Initialize the Ethernet server library
 // with the IP address and port you want to use
 // (port 80 is default for HTTP):
@@ -15,8 +18,6 @@ EthernetServer server(80);
 EthernetClient client;
 
 long lastReadingTime = 0;
-// char nodeServer[] = "www.google.com"; 
-// Add server ip here
 
 void setup() {
   // Open serial communications and wait for port to open:
@@ -33,7 +34,7 @@ void setup() {
 void loop() {
   // check if already passed 5 seconds from the last read.
   if (millis() - lastReadingTime > 5000) {
-    tryConnection();
+    postTemperature();
     lastReadingTime = millis();
   }
 
@@ -79,15 +80,17 @@ void listenForEthernetClients(){
   }
 }
 
-void tryConnection(){
+void postTemperature(int temperature){
   // if you get a connection, report back via serial:
   if (client.connect(nodeServer, 80)) {
     Serial.println("connected");
-    // Make a HTTP request:
+    // Make a HTTP POST request:
     client.println("POST /sensor/api/"+ temperature +" HTTP/1.1");
     client.println("Host: www.server.com");
     client.println("Connection: close");
     client.println();
+
+    Serial.println("temperature posted");
   } else {
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
