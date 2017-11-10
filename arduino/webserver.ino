@@ -34,7 +34,8 @@ void setup() {
 void loop() {
   // check if already passed 5 seconds from the last read.
   if (millis() - lastReadingTime > 5000) {
-    postTemperature();
+//    postTemperature("hello");
+    Serial.println("Send post request");
     lastReadingTime = millis();
   }
 
@@ -59,6 +60,8 @@ void listenForEthernetClients(){
          // send a standard http response header
          client.println("HTTP/1.1 200 OK");
          client.println("Content-Type: text/html");
+         client.println("Connection: close");
+         client.println("request completed");
           // Control air conditioner
           Serial.println("Execute command");
           break;
@@ -84,9 +87,9 @@ void postTemperature(int temperature){
   // if you get a connection, report back via serial:
   if (client.connect(nodeServer, 80)) {
     Serial.println("connected");
-    // Make a HTTP POST request:
-    client.println("POST /sensor/api/"+ temperature +" HTTP/1.1");
-    client.println("Host: www.server.com");
+    // Make a HTTP GET request:
+    client.println("GET /temp/api/lm?temperature=" + temperature + " HTTP/1.1");
+    client.println("Host: www.server.com"); // Add node server
     client.println("Connection: close");
     client.println();
 
