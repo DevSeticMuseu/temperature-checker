@@ -15,8 +15,8 @@ locationRef.on('child_changed', function (data) {
 });
 
 const makeRequest = function(ac, status){
-    const url = `http://192.168.0.17/temp/api/${ac}/${status}`
-    
+    const url = `http://192.168.0.17/temp/api/${ac}/${status}`;
+
     http.get(url, function (res) {
         res.setEncoding('utf8');
         res.on('data', function(chunk){
