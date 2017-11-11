@@ -4,18 +4,21 @@
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
 byte mac[] = {
-  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
+    0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
 };
 IPAddress ip(192, 168, 0, 17);
 
-IPAddress nodeServer(74,125,232,128);
-// char nodeServer[] = "www.google.com"; 
+IPAddress nodeServer(74, 125, 232, 128);
+// char nodeServer[] = "www.google.com";
 
 // Initialize the Ethernet server library
 // with the IP address and port you want to use
 // (port 80 is default for HTTP):
 EthernetServer server(80);
 EthernetClient client;
+
+const int LM35 = A0; // Define o pino analógico que irá ler a saída do LM35
+float temperature; // Variável que armazenará a temperatura medida
 
 long lastReadingTime = 0;
 
@@ -30,11 +33,11 @@ void setup() {
   Serial.println(Ethernet.localIP());
 }
 
-
 void loop() {
   // check if already passed 5 seconds from the last read.
   if (millis() - lastReadingTime > 5000) {
-//    postTemperature("hello");
+    // readTemperature();
+    //    postTemperature(temperature);
     Serial.println("Send post request");
     lastReadingTime = millis();
   }
@@ -49,27 +52,66 @@ void listenForEthernetClients(){
     Serial.println("new client");
     // an http request ends with a blank line
     boolean currentLineIsBlank = true;
+    String request;
+
     while (client.connected()) {
       if (client.available()) {
         char c = client.read();
+        request += c;
         Serial.write(c);
         // if you've gotten to the end of the line (received a newline
         // character) and the line is blank, the http request has ended,
         // so you can send a reply
         if (c == '\n' && currentLineIsBlank) {
-         // send a standard http response header
-         client.println("HTTP/1.1 200 OK");
-         client.println("Content-Type: text/html");
-         client.println("Connection: close");
-         client.println("request completed");
-          // Control air conditioner
-          Serial.println("Execute command");
+          if (request.indexOf("/temperature-manager/api/ac/1?status=true")){
+            // send a standard http response header
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-Type: text/html");
+            client.println("Connection: close"); // the connection will be closed after completion of the response        // refresh the page automatically every 5 sec
+            client.println();
+            client.println("<!DOCTYPE HTML>");
+            client.println("<html>");
+            client.println("<h1>ac1 = true</h1>");
+            client.println("</html>");
+          } else if (request.indexOf("/temperature-manager/api/ac/1?status=false")) {
+            // send a standard http response header
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-Type: text/html");
+            client.println("Connection: close"); // the connection will be closed after completion of the response        // refresh the page automatically every 5 sec
+            client.println();
+            client.println("<!DOCTYPE HTML>");
+            client.println("<html>");
+            client.println("<h1>ac1 = false</h1>");
+            client.println("</html>");
+          } else if (request.indexOf("/temperature-manager/api/ac/2?status=true")) {
+            // send a standard http response header
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-Type: text/html");
+            client.println("Connection: close"); // the connection will be closed after completion of the response        // refresh the page automatically every 5 sec
+            client.println();
+            client.println("<!DOCTYPE HTML>");
+            client.println("<html>");
+            client.println("<h1>ac2 = true</h1>");
+            client.println("</html>");
+          } else if (request.indexOf("/temperature-manager/api/ac/2?status=false")) {
+            // send a standard http response header
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-Type: text/html");
+            client.println("Connection: close"); // the connection will be closed after completion of the response        // refresh the page automatically every 5 sec
+            client.println();
+            client.println("<!DOCTYPE HTML>");
+            client.println("<html>");
+            client.println("<h1>ac2 = false</h1>");
+            client.println("</html>");
+          }
+
           break;
         }
         if (c == '\n') {
           // you're starting a new line
           currentLineIsBlank = true;
-        } else if (c != '\r') {
+        }
+        else if (c != '\r') {
           // you've gotten a character on the current line
           currentLineIsBlank = false;
         }
@@ -83,12 +125,13 @@ void listenForEthernetClients(){
   }
 }
 
-void postTemperature(int temperature){
+void postTemperature(int temperature) {
+  String temperatureStr = String(temperature);
   // if you get a connection, report back via serial:
   if (client.connect(nodeServer, 80)) {
     Serial.println("connected");
     // Make a HTTP GET request:
-    client.println("GET /temp/api/lm?temperature=" + temperature + " HTTP/1.1");
+    client.println("GET /temperature-manager/api/lm?temperature=" + temperatureStr + " HTTP/1.1");
     client.println("Host: www.server.com"); // Add node server
     client.println("Connection: close");
     client.println();
@@ -98,4 +141,10 @@ void postTemperature(int temperature){
     // if you didn't get a connection to the server:
     Serial.println("connection failed");
   }
+}
+
+void readTemperature() {
+  temperature = ( float(analogRead(LM35)) * 5 / (1023) ) / 0.01;
+  Serial.print("Temperatura: ");
+  Serial.println(temperature);
 }
