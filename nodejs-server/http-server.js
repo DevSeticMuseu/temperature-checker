@@ -11,10 +11,10 @@ http.createServer(function (req, res) {
     const pathname = parsedUrl.pathname;
     const query = parsedUrl.query;
 
-    if (pathname === '/temp/api/lm') {
+    if (pathname === '/temperature-manager/api/lm') {
         const date = getDate();
 
-        firebase.database().ref('/sensor/' + date.day).update({
+        init.firebase.database().ref('/sensor/' + date.day).update({
             [date.time]: query.temperature
         });
     }

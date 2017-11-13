@@ -11,11 +11,12 @@ locationRef.on('child_changed', function (data) {
     const ac = data.key;
     const status = data.val();
 
+    console.log(`${ac}=${status}`)
     makeRequest(ac, status);
 });
 
 const makeRequest = function(ac, status){
-    const url = `http://192.168.0.17/temp/api/${ac}/${status}`;
+    const url = `http://10.42.0.17/temperature-manager/api/${ac}?status=${status}`;
 
     http.get(url, function (res) {
         res.setEncoding('utf8');
