@@ -6,9 +6,9 @@
 byte mac[] = {
     0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
 };
-IPAddress ip(192, 168, 0, 17);
+IPAddress ip(10, 42, 0, 17);
 
-IPAddress nodeServer(74, 125, 232, 128);
+IPAddress nodeServer(192, 168, 0, 11);
 // char nodeServer[] = "www.google.com";
 
 // Initialize the Ethernet server library
@@ -17,16 +17,16 @@ IPAddress nodeServer(74, 125, 232, 128);
 EthernetServer server(80);
 EthernetClient client;
 
-const int LM35 = A0; // Define o pino analógico que irá ler a saída do LM35
+const int LM35 = A3; // Define o pino analógico que irá ler a saída do LM35
 float temperature; // Variável que armazenará a temperatura medida
 
 long lastReadingTime = 0;
 
-void setup() {
+void setup()
+{
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
 
-  // start the Ethernet connection and the server:
   Ethernet.begin(mac, ip);
   server.begin();
   Serial.print("server is at ");
@@ -35,10 +35,10 @@ void setup() {
 
 void loop() {
   // check if already passed 5 seconds from the last read.
-  if (millis() - lastReadingTime > 5000) {
-    // readTemperature();
-    //    postTemperature(temperature);
-    Serial.println("Send post request");
+  if (millis() - lastReadingTime > 10000) {
+    readTemperature();
+    postTemperature(temperature);
+    Serial.println();
     lastReadingTime = millis();
   }
 
@@ -63,7 +63,7 @@ void listenForEthernetClients(){
         // character) and the line is blank, the http request has ended,
         // so you can send a reply
         if (c == '\n' && currentLineIsBlank) {
-          if (request.indexOf("/temperature-manager/api/ac/1?status=true")){
+          if (request.indexOf("/temperature-manager/api/ac1?status=true") > 0){
             // send a standard http response header
             client.println("HTTP/1.1 200 OK");
             client.println("Content-Type: text/html");
@@ -73,7 +73,7 @@ void listenForEthernetClients(){
             client.println("<html>");
             client.println("<h1>ac1 = true</h1>");
             client.println("</html>");
-          } else if (request.indexOf("/temperature-manager/api/ac/1?status=false")) {
+          } else if (request.indexOf("/temperature-manager/api/ac1?status=false") > 0) {
             // send a standard http response header
             client.println("HTTP/1.1 200 OK");
             client.println("Content-Type: text/html");
@@ -83,7 +83,7 @@ void listenForEthernetClients(){
             client.println("<html>");
             client.println("<h1>ac1 = false</h1>");
             client.println("</html>");
-          } else if (request.indexOf("/temperature-manager/api/ac/2?status=true")) {
+          } else if (request.indexOf("/temperature-manager/api/ac2?status=true") > 0) {
             // send a standard http response header
             client.println("HTTP/1.1 200 OK");
             client.println("Content-Type: text/html");
@@ -93,7 +93,7 @@ void listenForEthernetClients(){
             client.println("<html>");
             client.println("<h1>ac2 = true</h1>");
             client.println("</html>");
-          } else if (request.indexOf("/temperature-manager/api/ac/2?status=false")) {
+          } else if (request.indexOf("/temperature-manager/api/ac2?status=false") > 0) {
             // send a standard http response header
             client.println("HTTP/1.1 200 OK");
             client.println("Content-Type: text/html");
@@ -118,21 +118,25 @@ void listenForEthernetClients(){
       }
     }
     // give the web browser time to receive the data
-    delay(100);
+    delay(10);
     // close the connection:
     client.stop();
     Serial.println("client disconnected");
   }
 }
 
-void postTemperature(int temperature) {
+void postTemperature(float temperature) {
+  // close any connection before send a new request.
+  // This will free the socket on the WiFi shield
+  client.stop();
+  
   String temperatureStr = String(temperature);
   // if you get a connection, report back via serial:
-  if (client.connect(nodeServer, 80)) {
+  if (client.connect(nodeServer, 3000)) {
     Serial.println("connected");
     // Make a HTTP GET request:
     client.println("GET /temperature-manager/api/lm?temperature=" + temperatureStr + " HTTP/1.1");
-    client.println("Host: www.server.com"); // Add node server
+    client.println("Host: 10.42.0.17"); // Add node server
     client.println("Connection: close");
     client.println();
 
