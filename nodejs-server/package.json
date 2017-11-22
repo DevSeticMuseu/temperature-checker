@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "firebase-admin": "^5.4.3"
+    "firebase-admin": "^5.4.3",
+    "telebot": "^1.2.3"
   }
 }
