@@ -31,18 +31,20 @@ bot.on('/status', (msg) => {
 });
 
 bot.on('/last7', (msg) => {
-    var message = 'As últimas 7 temperaturas medidas foram: ';
-
-    var ref = initFire.firebase.database().ref('sensor/12-11-2017');
-    var refPromise = ref.limitToLast(2).once('value', function(snapshot){
-        snapshot.forEach(function(childSnapshot){
-            message += childSnapshot.val().temperature + 'º ';
-        });
-    });
+    if(msg.from.id === 250238939){
+        var message = 'As últimas 7 temperaturas medidas foram: ';
     
-    refPromise.then(function(val){
-        bot.sendMessage(msg.from.id, message);
-    });
+        var ref = initFire.firebase.database().ref('sensor/12-11-2017');
+        var refPromise = ref.limitToLast(2).once('value', function(snapshot){
+            snapshot.forEach(function(childSnapshot){
+                message += childSnapshot.val().temperature + 'º ';
+            });
+        });
+        
+        refPromise.then(function(val){
+            bot.sendMessage(msg.from.id, message);
+        });
+    }
 });
 
 bot.start();
