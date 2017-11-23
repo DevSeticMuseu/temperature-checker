@@ -12,32 +12,37 @@ const date = time.getDate();
 
 bot.on('/status', (msg) => {
     if (msg.from.id === 250238939){
-        // return bot.sendMessage(msg.from.id, `Hello, ${msg.from.first_name}!, ${msg.from.id}`);
 
         var ref = initFire.firebase.database().ref(`sensor/12-11-2017`);
-        ref.orderByChild('time').limitToLast(1).once('value').then(function(snapshot){
-            if(snapshot){
-                console.log(snapshot.key);
-                console.log('TEmperature: '+ snapshot.val());
-            }
+        ref.limitToLast(1).once('value', function(snapshot){
+            snapshot.forEach(function(childSnapshot){
+                return bot.sendMessage(msg.from.id, `Última temperatura medida: ${childSnapshot.val().temperature}º`);
+            });
         });
 
-        initFire.firebase.database().ref('airConditioner/ac1/status').once('value').then(function(snapshot){
-            if(snapshot){
-                console.log('Ar condicionado 1: '+ snapshot.val());
-            }
+        initFire.firebase.database().ref('airConditioner/').once('value', function(snapshot){
+            snapshot.forEach(function(childSnapshot){
+                var on = (childSnapshot.val().status) ? 'Ligado' : 'Desligado';
+                bot.sendMessage(msg.from.id, `${childSnapshot.val().number}: ${on}`);
+            });
         });
 
-        initFire.firebase.database().ref('airConditioner/ac2/status').once('value').then(function(snapshot){
-            if(snapshot){
-                console.log('Ar condicionado 2: '+ snapshot.val());
-            }
-        });
     }
 });
 
-bot.on('/hello', (msg) => {
-    console.log('hello');
+bot.on('/last7', (msg) => {
+    var message = 'As últimas 7 temperaturas medidas foram: ';
+
+    var ref = initFire.firebase.database().ref('sensor/12-11-2017');
+    var refPromise = ref.limitToLast(2).once('value', function(snapshot){
+        snapshot.forEach(function(childSnapshot){
+            message += childSnapshot.val().temperature + 'º ';
+        });
+    });
+    
+    refPromise.then(function(val){
+        bot.sendMessage(msg.from.id, message);
+    });
 });
 
 bot.start();
