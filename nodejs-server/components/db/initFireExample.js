@@ -1,4 +1,4 @@
-var serviceAccount = require('path/to/serviceAccountKey.json');
+var serviceAccount = require('./serviceAccountKeyExample.json');
 
 firebase.initializeApp({
   credential: firebase.credential.cert(serviceAccount),

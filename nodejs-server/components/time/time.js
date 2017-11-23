@@ -27,3 +27,5 @@ const getDate = function () {
         "time": fullTime
     }
 }
+
+exports.getDate = getDate;

@@ -2,10 +2,10 @@
 
 const http = require('http');
 
-const init = require('./init');
+const initFire = require('../components/db/initFire');
 
 // AC commands. Get information about ac status
-const locationRef = init.firebase.database().ref('ac/');
+const locationRef = initFire.firebase.database().ref('ac/');
 
 locationRef.on('child_changed', function (data) {
     const ac = data.key;

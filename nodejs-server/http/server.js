@@ -3,7 +3,8 @@
 const http = require('http');
 const url = require('url');
 
-const init = require('./init');
+const initFire = require('../components/db/initFire');
+const time = require('../components/time/time');
 
 http.createServer(function (req, res) {
     const parsedUrl = url.parse(req.url, true); // true to get query as object
@@ -12,9 +13,9 @@ http.createServer(function (req, res) {
     const query = parsedUrl.query;
 
     if (pathname === '/temperature-manager/api/lm') {
-        const date = getDate();
+        const date = time.getDate();
 
-        init.firebase.database().ref('/sensor/' + date.day).update({
+        initFire.firebase.database().ref('/sensor/' + date.day).update({
             [date.time]: query.temperature
         });
     }
