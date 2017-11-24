@@ -15,8 +15,9 @@ http.createServer(function (req, res) {
     if (pathname === '/temperature-manager/api/lm') {
         const date = time.getDate();
 
-        initFire.firebase.database().ref('/sensor/' + date.day).update({
-            [date.time]: query.temperature
+        initFire.firebase.database().ref('lm35/' + date.day + '/' + date.time).update({
+            "temperature": query.temperature,
+            "time": date.time
         });
     }
 

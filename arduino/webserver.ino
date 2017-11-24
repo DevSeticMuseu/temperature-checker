@@ -63,7 +63,7 @@ void listenForEthernetClients(){
         // character) and the line is blank, the http request has ended,
         // so you can send a reply
         if (c == '\n' && currentLineIsBlank) {
-          if (request.indexOf("/temperature-manager/api/ac1?status=true") > 0){
+          if (request.indexOf("/temperature-manager/api/1?status=true") > 0){
             // send a standard http response header
             client.println("HTTP/1.1 200 OK");
             client.println("Content-Type: text/html");
@@ -73,7 +73,7 @@ void listenForEthernetClients(){
             client.println("<html>");
             client.println("<h1>ac1 = true</h1>");
             client.println("</html>");
-          } else if (request.indexOf("/temperature-manager/api/ac1?status=false") > 0) {
+          } else if (request.indexOf("/temperature-manager/api/1?status=false") > 0) {
             // send a standard http response header
             client.println("HTTP/1.1 200 OK");
             client.println("Content-Type: text/html");
@@ -83,7 +83,7 @@ void listenForEthernetClients(){
             client.println("<html>");
             client.println("<h1>ac1 = false</h1>");
             client.println("</html>");
-          } else if (request.indexOf("/temperature-manager/api/ac2?status=true") > 0) {
+          } else if (request.indexOf("/temperature-manager/api/2?status=true") > 0) {
             // send a standard http response header
             client.println("HTTP/1.1 200 OK");
             client.println("Content-Type: text/html");
@@ -93,7 +93,7 @@ void listenForEthernetClients(){
             client.println("<html>");
             client.println("<h1>ac2 = true</h1>");
             client.println("</html>");
-          } else if (request.indexOf("/temperature-manager/api/ac2?status=false") > 0) {
+          } else if (request.indexOf("/temperature-manager/api/2?status=false") > 0) {
             // send a standard http response header
             client.println("HTTP/1.1 200 OK");
             client.println("Content-Type: text/html");

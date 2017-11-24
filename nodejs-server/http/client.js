@@ -5,11 +5,20 @@ const http = require('http');
 const initFire = require('../components/db/initFire');
 
 // AC commands. Get information about ac status
-const locationRef = initFire.firebase.database().ref('ac/');
+const ac1Ref = initFire.firebase.database().ref('airConditioner/1');
+const ac2Ref = initFire.firebase.database().ref('airConditioner/2');
 
-locationRef.on('child_changed', function (data) {
+ac1Ref.on('child_changed', function (data) {
     const ac = data.key;
-    const status = data.val();
+    const status = data.val().status;
+
+    console.log(`${ac}=${status}`)
+    makeRequest(ac, status);
+});
+
+ac2Ref.on('child_changed', function (data) {
+    const ac = data.key;
+    const status = data.val().status;
 
     console.log(`${ac}=${status}`)
     makeRequest(ac, status);

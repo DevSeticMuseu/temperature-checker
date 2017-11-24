@@ -10,10 +10,10 @@ const time = require('../components/time/time');
 
 const date = time.getDate();
 
-bot.on('/status', (msg) => {
+bot.on('/status', function(msg) {
     if (msg.from.id === 250238939){
 
-        var ref = initFire.firebase.database().ref('sensor/' + date.day);
+        var ref = initFire.firebase.database().ref('lm35/' + date.day);
         ref.limitToLast(1).once('value', function(snapshot){
             snapshot.forEach(function(childSnapshot){
                 return bot.sendMessage(msg.from.id, `Última temperatura medida: ${childSnapshot.val().temperature}º`);
@@ -30,11 +30,11 @@ bot.on('/status', (msg) => {
     }
 });
 
-bot.on('/last7', (msg) => {
+bot.on('/last7', function(msg) {
     if(msg.from.id === 250238939){
         var message = 'As últimas 7 temperaturas medidas foram: ';
     
-        var ref = initFire.firebase.database().ref('sensor/' + date.day);
+        var ref = initFire.firebase.database().ref('lm35/' + date.day);
         var refPromise = ref.limitToLast(2).once('value', function(snapshot){
             snapshot.forEach(function(childSnapshot){
                 message += childSnapshot.val().temperature + 'º ';
@@ -49,7 +49,7 @@ bot.on('/last7', (msg) => {
 
 bot.on('/temperatura', function(msg){
     if(msg.from.id === 250238939){
-        var ref = initFire.firebase.database().ref('sensor/' + date.day);
+        var ref = initFire.firebase.database().ref('lm35/' + date.day);
         ref.limitToLast(1).once('value', function(snapshot){
             snapshot.forEach(function(childSnapshot){
                 return bot.sendMessage(msg.from.id, `Última temperatura medida: ${childSnapshot.val().temperature}º`);
