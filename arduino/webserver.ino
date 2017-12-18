@@ -7,6 +7,9 @@ byte mac[] = {
     0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
 };
 IPAddress ip(10, 42, 0, 17);
+IPAddress myDns(192,168,1, 1);
+IPAddress gateway(192, 168, 1, 1);
+IPAddress subnet(255, 255, 0, 0);
 
 IPAddress nodeServer(192, 168, 0, 11);
 // char nodeServer[] = "www.google.com";
@@ -27,7 +30,7 @@ void setup()
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
 
-  Ethernet.begin(mac, ip);
+  Ethernet.begin(mac, ip, myDns, gateway, subnet);
   server.begin();
   Serial.print("server is at ");
   Serial.println(Ethernet.localIP());
